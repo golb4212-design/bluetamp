@@ -1,63 +1,39 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+set -euo pipefail
 
-RAW_URL="https://raw.githubusercontent.com/golb4212-design/bluetamp/main/index.html"
-TEMPLATE_DIR="/var/lib/pasarguard/templates/subscription"
-TEMPLATE_FILE="${TEMPLATE_DIR}/index.html"
+REPO="golb4212-design/bluetamp"
+BRANCH="main"
+TARGET_DIR="/var/lib/pasarguard/templates/subscription"
+TARGET_FILE="$TARGET_DIR/index.html"
 ENV_FILE="/opt/pasarguard/.env"
-STAMP="$(date +%Y%m%d-%H%M%S)"
+URL="https://raw.githubusercontent.com/$REPO/$BRANCH/index.html?v=4"
 
-if [[ "${EUID}" -ne 0 ]]; then
-  echo "این اسکریپت باید با sudo یا کاربر root اجرا شود."
+if [[ $EUID -ne 0 ]]; then
+  echo "این اسکریپت را با sudo اجرا کنید."
   exit 1
 fi
 
-for command in wget grep sed cp mkdir; do
-  command -v "${command}" >/dev/null 2>&1 || {
-    echo "دستور موردنیاز پیدا نشد: ${command}"
-    exit 1
-  }
-done
+mkdir -p "$TARGET_DIR"
+if [[ -f "$TARGET_FILE" ]]; then
+  cp -a "$TARGET_FILE" "$TARGET_FILE.backup.$(date +%Y%m%d-%H%M%S)"
+fi
 
-if [[ ! -f "${ENV_FILE}" ]]; then
-  echo "فایل تنظیمات پاسارگارد پیدا نشد: ${ENV_FILE}"
+curl -4 -fL --connect-timeout 20 --retry 3 -H "Cache-Control: no-cache" "$URL" -o "$TARGET_FILE.tmp"
+grep -q "BlueTamp PasarGuard Subscription Template v4.0.0" "$TARGET_FILE.tmp" || {
+  echo "فایل دانلودشده نسخه ۴ نیست. ابتدا index.html جدید را در GitHub جایگزین کنید."
+  rm -f "$TARGET_FILE.tmp"
   exit 1
-fi
-
-mkdir -p "${TEMPLATE_DIR}"
-
-if [[ -f "${TEMPLATE_FILE}" ]]; then
-  cp -a "${TEMPLATE_FILE}" "${TEMPLATE_FILE}.backup-${STAMP}"
-fi
-cp -a "${ENV_FILE}" "${ENV_FILE}.backup-${STAMP}"
-
-TEMP_FILE="$(mktemp)"
-trap 'rm -f "${TEMP_FILE}"' EXIT
-wget -q --https-only --timeout=20 --tries=3 -O "${TEMP_FILE}" "${RAW_URL}"
-
-if ! grep -q '<!doctype html>' "${TEMP_FILE}"; then
-  echo "فایل دانلودشده معتبر نیست؛ نصب متوقف شد."
-  exit 1
-fi
-
-install -m 0644 "${TEMP_FILE}" "${TEMPLATE_FILE}"
-
-set_env_value() {
-  local key="$1"
-  local value="$2"
-  if grep -qE "^[[:space:]]*${key}=" "${ENV_FILE}"; then
-    sed -i -E "s|^[[:space:]]*${key}=.*$|${key}=\"${value}\"|" "${ENV_FILE}"
-  else
-    printf '\n%s="%s"\n' "${key}" "${value}" >> "${ENV_FILE}"
-  fi
 }
+mv "$TARGET_FILE.tmp" "$TARGET_FILE"
+chmod 0644 "$TARGET_FILE"
 
-set_env_value "CUSTOM_TEMPLATES_DIRECTORY" "/var/lib/pasarguard/templates/"
-set_env_value "SUBSCRIPTION_PAGE_TEMPLATE" "subscription/index.html"
-
-if command -v pasarguard >/dev/null 2>&1; then
-  pasarguard restart
-  echo "قالب BlueTamp نصب و پاسارگارد ری‌استارت شد."
+if [[ -f "$ENV_FILE" ]]; then
+  sed -i '/^CUSTOM_TEMPLATES_DIRECTORY=/d;/^SUBSCRIPTION_PAGE_TEMPLATE=/d' "$ENV_FILE"
+  printf '\nCUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"\nSUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"\n' >> "$ENV_FILE"
 else
-  echo "قالب نصب شد، اما دستور pasarguard پیدا نشد. سرویس را دستی ری‌استارت کنید."
+  echo "هشدار: فایل $ENV_FILE پیدا نشد. تنظیمات قالب را دستی وارد کنید."
 fi
+
+pasarguard restart
+
+echo "BlueTamp v4 نصب شد."
