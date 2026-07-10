@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070b1a">
+  <title>اشتراک</title>
+  <style>
+    :root{
+      --brand:#7357ff;
+      --brand-2:#23a7ff;
+      --success:#19c77b;
+      --warning:#ffb020;
+      --danger:#ff5b68;
+      --bg:#070b1a;
+      --bg-2:#0b1026;
+      --panel:rgba(16,23,52,.74);
+      --panel-2:rgba(25,34,70,.78);
+      --stroke:rgba(255,255,255,.105);
+      --stroke-strong:rgba(255,255,255,.18);
+      --text:#f7f8ff;
+      --muted:#9aa4c5;
+      --muted-2:#687294;
+      --shadow:0 24px 80px rgba(0,0,0,.34);
+      --radius-xl:28px;
+      --radius-lg:20px;
+      --radius-md:15px;
+      --max:1440px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100dvh;
+      color:var(--text);
+      font-family:Vazirmatn,IRANSansX,"Segoe UI",Tahoma,sans-serif;
+      background:
+        radial-gradient(circle at 15% 5%,rgba(35,167,255,.13),transparent 27%),
+        radial-gradient(circle at 85% 10%,rgba(115,87,255,.18),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(112,64,255,.12),transparent 35%),
+        var(--bg);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.21;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:42px 42px;
+      mask-image:linear-gradient(to bottom,#000,transparent 92%);
+    }
+
+    button,input,select{font:inherit}
+    button,a{ -webkit-tap-highlight-color:transparent }
+    a{color:inherit;text-decoration:none}
+    .hidden{display:none!important}
+
+    .shell{width:min(calc(100% - 28px),var(--max));margin:auto;padding-bottom:28px}
+
+    .topbar{
+      width:min(calc(100% - 28px),var(--max));
+      margin:0 auto 24px;
+      min-height:82px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+
+    .brand{display:flex;align-items:center;gap:13px;min-width:0}
+    .brand-mark{
+      width:45px;height:45px;border-radius:14px;display:grid;place-items:center;
+      background:linear-gradient(145deg,var(--brand-2),var(--brand));
+      box-shadow:0 10px 32px rgba(96,77,255,.3),inset 0 1px 0 rgba(255,255,255,.35);
+      font-weight:900;font-size:22px;transform:rotate(-8deg)
+    }
+    .brand-copy{direction:ltr;text-align:left;line-height:1.08}
+    .brand-name{font-weight:900;letter-spacing:.12em;font-size:20px;white-space:nowrap}
+    .brand-tagline{color:var(--muted);font-size:9px;letter-spacing:.13em;margin-top:5px;white-space:nowrap}
+
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .icon-btn,.ghost-btn{
+      min-height:42px;border:1px solid var(--stroke);color:var(--text);
+      background:rgba(255,255,255,.035);border-radius:13px;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      transition:.2s ease;
+    }
+    .icon-btn{width:42px;padding:0}
+    .ghost-btn{padding:0 14px}
+    .icon-btn:hover,.ghost-btn:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+
+    .card{
+      position:relative;
+      background:linear-gradient(145deg,rgba(19,27,61,.87),rgba(10,16,39,.82));
+      border:1px solid var(--stroke);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.045);
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(140deg,rgba(255,255,255,.045),transparent 34%);
+    }
+
+    .setup-card{max-width:680px;margin:52px auto;padding:28px;position:relative;z-index:1}
+    .setup-card h1{margin:0 0 8px;font-size:clamp(26px,4vw,38px)}
+    .setup-card p{color:var(--muted);line-height:1.9;margin:0 0 24px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field-wrap{display:flex;flex-direction:column;gap:8px}
+    .field-wrap.full{grid-column:1/-1}
+    .field-label{font-size:13px;color:var(--muted)}
+    .field{
+      width:100%;min-height:52px;border-radius:14px;border:1px solid var(--stroke);
+      background:rgba(255,255,255,.04);color:var(--text);padding:0 15px;outline:none;
+      direction:ltr;text-align:left
+    }
+    .field:focus{border-color:rgba(115,87,255,.75);box-shadow:0 0 0 4px rgba(115,87,255,.12)}
+    .primary-btn{
+      min-height:52px;border:0;border-radius:14px;padding:0 20px;cursor:pointer;color:white;
+      background:linear-gradient(135deg,var(--brand),#5b2dff);
+      box-shadow:0 12px 32px rgba(91,45,255,.26);font-weight:800
+    }
+    .error-box{margin-top:14px;border:1px solid rgba(255,91,104,.35);background:rgba(255,91,104,.12);color:#ffc2c7;padding:12px 14px;border-radius:14px}
+
+    .hero{padding:26px;margin-bottom:18px;min-height:280px}
+    .hero-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;position:relative;z-index:1}
+    .profile-area{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding:12px 6px}
+    .avatar-ring{width:164px;height:164px;border-radius:50%;position:relative;display:grid;place-items:center;
+      background:conic-gradient(from 40deg,var(--brand),var(--brand-2),var(--brand),transparent 82%);
+      box-shadow:0 0 0 1px rgba(255,255,255,.07),0 0 50px rgba(90,80,255,.18)}
+    .avatar-ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:linear-gradient(145deg,#26316d,#101632)}
+    .avatar-icon{position:relative;width:92px;height:92px;border-radius:50%;background:linear-gradient(145deg,#fff,#cdd4ff)}
+    .avatar-icon::before{content:"";position:absolute;width:34px;height:34px;border-radius:50%;background:#8893d7;top:13px;left:29px}
+    .avatar-icon::after{content:"";position:absolute;width:60px;height:32px;border-radius:50% 50% 30% 30%;background:#8893d7;bottom:12px;left:16px}
+    .welcome{color:var(--muted);font-size:15px;margin-bottom:8px}
+    .username{font-size:clamp(28px,4vw,46px);font-weight:900;margin:0 0 16px;letter-spacing:-.03em;word-break:break-word}
+    .status-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .status-pill{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 13px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid transparent}
+    .status-active{background:rgba(25,199,123,.15);color:#67f0b5;border-color:rgba(25,199,123,.28)}
+    .status-warning{background:rgba(255,176,32,.15);color:#ffd28b;border-color:rgba(255,176,32,.3)}
+    .status-danger{background:rgba(255,91,104,.15);color:#ffadb5;border-color:rgba(255,91,104,.3)}
+    .status-muted{background:rgba(255,255,255,.07);color:var(--muted);border-color:var(--stroke)}
+    .last-online{color:var(--muted);font-size:13px;margin-top:18px;display:flex;align-items:center;gap:8px}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .stat{
+      min-height:112px;padding:17px;border:1px solid var(--stroke);border-radius:18px;
+      background:rgba(255,255,255,.035);display:flex;flex-direction:column;justify-content:space-between
+    }
+    .stat-top{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px}
+    .stat-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(115,87,255,.16);color:#b6a9ff}
+    .stat-value{font-size:20px;font-weight:900;direction:ltr;text-align:right}
+    .stat-sub{font-size:11px;color:var(--muted-2);margin-top:4px}
+
+    .usage{padding:26px;margin-bottom:18px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;position:relative;z-index:1}
+    .section-title{margin:0;font-size:21px;font-weight:900}
+    .range-switch{display:flex;gap:8px;flex-wrap:wrap}
+    .range-btn{border:1px solid var(--stroke);background:rgba(255,255,255,.035);color:var(--muted);border-radius:12px;padding:9px 13px;cursor:pointer}
+    .range-btn.active{background:linear-gradient(135deg,var(--brand),#5c2cff);color:#fff;border-color:transparent}
+    .usage-grid{display:grid;grid-template-columns:280px 1fr;gap:30px;align-items:center;position:relative;z-index:1}
+    .donut-wrap{text-align:center}
+    .donut{width:210px;height:210px;border-radius:50%;margin:auto;display:grid;place-items:center;position:relative;background:conic-gradient(var(--brand-2) 0 25%,var(--brand) 25% var(--usage,0%),rgba(255,255,255,.06) var(--usage,0%) 100%);box-shadow:0 0 40px rgba(76,70,255,.12)}
+    .donut::before{content:"";position:absolute;inset:17px;border-radius:50%;background:#0c122c;border:1px solid rgba(255,255,255,.07)}
+    .donut-content{position:relative;z-index:1}
+    .donut-value{font-size:42px;font-weight:900;direction:ltr}
+    .donut-label{color:var(--muted);font-size:13px;margin-top:4px}
+    .usage-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+    .metric{padding:14px 15px;border-right:1px solid var(--stroke)}
+    .metric:first-child{border-right:0}
+    .metric-label{font-size:12px;color:var(--muted);margin-bottom:8px}
+    .metric-value{font-size:23px;font-weight:900;direction:ltr;text-align:right}
+    .progress{height:9px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-bottom:23px}
+    .progress>span{display:block;height:100%;width:var(--usage,0%);border-radius:inherit;background:linear-gradient(90deg,var(--brand),var(--brand-2));box-shadow:0 0 20px rgba(35,167,255,.3)}
+    .chart-box{height:250px;border-radius:18px;border:1px solid var(--stroke);background:rgba(255,255,255,.02);padding:12px;position:relative;overflow:hidden}
+    .chart-box svg{width:100%;height:100%;display:block}
+    .chart-empty{height:100%;display:grid;place-items:center;color:var(--muted);font-size:13px}
+
+    .bottom-grid{display:grid;grid-template-columns:1.1fr 1fr .9fr;gap:18px;margin-bottom:18px}
+    .panel{padding:22px;min-width:0}
+    .panel-title{font-size:18px;font-weight:900;margin:0 0 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .sub-url{display:flex;align-items:center;gap:9px;border:1px solid var(--stroke);background:rgba(255,255,255,.035);border-radius:14px;padding:10px 12px;direction:ltr}
+    .sub-url code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#d9deff;font-size:12px}
+    .square-btn{width:40px;height:40px;border-radius:11px;border:1px solid var(--stroke);background:rgba(255,255,255,.05);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+    .qr-box{margin-top:14px;display:grid;grid-template-columns:140px 1fr;gap:14px;align-items:center}
+    .qr-preview{width:140px;height:140px;border-radius:14px;background:#fff;padding:9px;display:grid;place-items:center;overflow:hidden}
+    .qr-preview canvas,.qr-preview img{width:100%!important;height:100%!important}
+    .action-stack{display:grid;gap:9px}
+    .action-btn{min-height:45px;border:1px solid var(--stroke);border-radius:13px;background:rgba(255,255,255,.04);color:#fff;cursor:pointer;font-weight:800}
+    .action-btn.primary{background:linear-gradient(135deg,var(--brand),#5c2cff);border-color:transparent}
+
+    .app-list,.quick-list{display:grid;gap:9px}
+    .app-row,.quick-row{min-height:56px;border:1px solid var(--stroke);background:rgba(255,255,255,.035);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:11px}
+    .app-logo,.quick-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:rgba(115,87,255,.13);flex:none;font-weight:900}
+    .app-meta,.quick-meta{flex:1;min-width:0}
+    .app-name,.quick-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .app-platform,.quick-sub{font-size:11px;color:var(--muted);margin-top:3px}
+    .app-link{font-size:12px;color:#b9adff;white-space:nowrap}
+    .support-box{margin-top:16px;padding-top:16px;border-top:1px solid var(--stroke);display:grid;gap:10px}
+    .support-link{min-height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:900}
+    .telegram{background:linear-gradient(135deg,#229ed9,#1479bc)}
+    .whatsapp{background:linear-gradient(135deg,#22c768,#13934a)}
+    .support-dynamic{background:linear-gradient(135deg,var(--brand),var(--brand-2))}
+    .support-caption{color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+
+    .configs{padding:22px;margin-bottom:18px}
+    .config-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative;z-index:1}
+    .config-row{border:1px solid var(--stroke);border-radius:15px;background:rgba(255,255,255,.03);padding:12px;display:flex;align-items:center;gap:10px;min-width:0}
+    .config-icon{width:42px;height:42px;border-radius:12px;background:rgba(35,167,255,.12);color:#8ed6ff;display:grid;place-items:center;flex:none;font-size:12px;font-weight:900}
+    .config-body{flex:1;min-width:0}
+    .config-name{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .config-preview{font-size:10px;color:var(--muted);direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px}
+    .config-actions{display:flex;gap:6px;flex:none}
+
+    .footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 4px;color:var(--muted);font-size:12px;flex-wrap:wrap}
+    .footer-links{display:flex;gap:18px;flex-wrap:wrap}
+
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,18px);opacity:0;pointer-events:none;z-index:999;background:#f6f7ff;color:#10142b;padding:11px 17px;border-radius:999px;font-weight:800;box-shadow:0 15px 50px rgba(0,0,0,.35);transition:.22s ease}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    .loading{position:fixed;inset:0;z-index:900;background:rgba(5,8,20,.78);backdrop-filter:blur(12px);display:grid;place-items:center}
+    .spinner{width:54px;height:54px;border:4px solid rgba(255,255,255,.12);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media (max-width:1100px){
+      .hero-grid{grid-template-columns:1fr}
+      .profile-area{grid-template-columns:130px 1fr}
+      .avatar-ring{width:130px;height:130px}.avatar-icon{transform:scale(.78)}
+      .usage-grid{grid-template-columns:230px 1fr}
+      .bottom-grid{grid-template-columns:1fr 1fr}.bottom-grid>.panel:last-child{grid-column:1/-1}
+    }
+
+    @media (max-width:760px){
+      :root{--radius-xl:22px}
+      .shell,.topbar{width:min(calc(100% - 18px),var(--max))}
+      .topbar{min-height:70px;margin-bottom:14px}.brand-tagline{display:none}.brand-name{font-size:17px}.brand-mark{width:40px;height:40px}
+      .ghost-btn{display:none}
+      .hero,.usage,.panel,.configs{padding:16px}
+      .hero{min-height:auto}
+      .profile-area{grid-template-columns:92px 1fr;gap:14px;padding:2px 0 12px}
+      .avatar-ring{width:92px;height:92px}.avatar-icon{transform:scale(.56)}
+      .username{font-size:28px;margin-bottom:10px}.welcome{font-size:12px}.last-online{margin-top:12px}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}.stat{min-height:96px;padding:13px}.stat-value{font-size:17px}
+      .usage-grid{grid-template-columns:1fr}.donut{width:180px;height:180px}.donut-value{font-size:36px}
+      .usage-metrics{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:1/-1}.metric{border-right:0;border-bottom:1px solid var(--stroke)}
+      .bottom-grid{grid-template-columns:1fr}.bottom-grid>.panel:last-child{grid-column:auto}
+      .config-list{grid-template-columns:1fr}
+      .qr-box{grid-template-columns:112px 1fr}.qr-preview{width:112px;height:112px}
+      .form-grid{grid-template-columns:1fr}.field-wrap.full{grid-column:auto}
+      .section-head{align-items:flex-start;flex-direction:column}
+    }
+
+    @media (max-width:440px){
+      .stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat{padding:11px}.stat-icon{width:30px;height:30px}.stat-value{font-size:15px}
+      .profile-area{grid-template-columns:74px 1fr}.avatar-ring{width:74px;height:74px}.avatar-icon{transform:scale(.43)}
+      .status-line{gap:6px}.status-pill{min-height:30px;padding:0 10px;font-size:11px}
+      .qr-box{grid-template-columns:1fr}.qr-preview{width:150px;height:150px;margin:auto}
+      .footer{justify-content:center;text-align:center}.footer-links{justify-content:center}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="خانه">
+      <span class="brand-mark" id="brand-mark">B</span>
+      <span class="brand-copy"><span class="brand-name" id="brand-name">BLUETAMP</span><span class="brand-tagline" id="brand-tagline">FAST • STABLE • SECURE</span></span>
+    </a>
+    <div class="top-actions">
+      <button class="ghost-btn" type="button" id="logout-btn">خروج</button>
+      <button class="icon-btn" type="button" id="theme-btn" aria-label="تغییر حالت">◐</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="setup" class="card setup-card hidden">
+      <h1>ورود به صفحه اشتراک</h1>
+      <p>اگر این فایل روی خود سرور پاسارگارد نصب شده باشد، لینک اشتراک به‌صورت خودکار شناسایی می‌شود. در غیر این صورت آدرس پنل و لینک اشتراک را وارد کنید.</p>
+      <div class="form-grid">
+        <label class="field-wrap"><span class="field-label">آدرس پنل</span><input class="field" id="panel-input" placeholder="https://panel.example.com"></label>
+        <label class="field-wrap"><span class="field-label">لینک یا توکن اشتراک</span><input class="field" id="token-input" placeholder="https://panel.example.com/sub/..."></label>
+        <button class="primary-btn field-wrap full" type="button" id="load-btn">نمایش اشتراک</button>
+      </div>
+      <div id="setup-error" class="error-box hidden"></div>
+    </section>
+
+    <div id="dashboard" class="hidden">
+      <section class="card hero">
+        <div class="hero-grid">
+          <div class="profile-area">
+            <div class="avatar-ring"><div class="avatar-icon"></div></div>
+            <div>
+              <div class="welcome">👋 خوش آمدید</div>
+              <h1 class="username" id="username">—</h1>
+              <div class="status-line"><span class="status-pill status-active" id="status">فعال ✓</span><span id="account-note" class="last-online">حساب شما آماده استفاده است.</span></div>
+              <div class="last-online">◷ <span id="online-at">آخرین اتصال: —</span></div>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat"><div class="stat-top"><span>پایان زمان</span><span class="stat-icon">◷</span></div><div><div class="stat-value" id="expire-date">—</div><div class="stat-sub" id="expire-remain">—</div></div></div>
+            <div class="stat"><div class="stat-top"><span>محدودیت دستگاه</span><span class="stat-icon">▣</span></div><div><div class="stat-value" id="hwid-limit">—</div><div class="stat-sub">ظرفیت اتصال همزمان</div></div></div>
+            <div class="stat"><div class="stat-top"><span>حجم کل</span><span class="stat-icon">◉</span></div><div><div class="stat-value" id="total-limit">—</div><div class="stat-sub">سقف دوره جاری</div></div></div>
+            <div class="stat"><div class="stat-top"><span>آخرین بروزرسانی</span><span class="stat-icon">↻</span></div><div><div class="stat-value" id="updated-at">همین حالا</div><div class="stat-sub">اطلاعات زنده از پنل</div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card usage">
+        <div class="section-head"><h2 class="section-title">مصرف اینترنت</h2><div class="range-switch"><button class="range-btn active" data-range="1d">۲۴ ساعت</button><button class="range-btn" data-range="7d">۷ روز</button><button class="range-btn" data-range="30d">۳۰ روز</button></div></div>
+        <div class="usage-grid">
+          <div class="donut-wrap"><div class="donut" id="usage-donut"><div class="donut-content"><div class="donut-value" id="usage-percent">۰٪</div><div class="donut-label">مصرف شده</div></div></div></div>
+          <div>
+            <div class="usage-metrics"><div class="metric"><div class="metric-label">حجم کل</div><div class="metric-value" id="metric-total">—</div></div><div class="metric"><div class="metric-label">مصرف شده</div><div class="metric-value" id="metric-used">—</div></div><div class="metric"><div class="metric-label">باقی‌مانده</div><div class="metric-value" id="metric-remain">—</div></div></div>
+            <div class="progress"><span id="usage-progress"></span></div>
+            <div class="chart-box" id="usage-chart"><div class="chart-empty">در حال دریافت نمودار مصرف…</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="card panel">
+          <h3 class="panel-title">اشتراک و کانفیگ‌ها <span>🔗</span></h3>
+          <div class="sub-url"><code id="subscription-url">—</code><button class="square-btn" id="copy-sub" type="button" aria-label="کپی">⧉</button></div>
+          <div class="qr-box"><div class="qr-preview" id="qr-box"><span style="color:#10142b;font-size:12px">QR</span></div><div class="action-stack"><button class="action-btn primary" id="show-qr" type="button">ساخت QR Code</button><button class="action-btn" id="copy-all" type="button">کپی همه کانفیگ‌ها</button><button class="action-btn" id="download-wg" type="button">دانلود WireGuard</button></div></div>
+        </article>
+
+        <article class="card panel">
+          <h3 class="panel-title">اپلیکیشن‌ها <span>▦</span></h3>
+          <div class="app-list" id="apps-list"><div class="quick-row"><div class="quick-meta"><div class="quick-name">در حال دریافت اپلیکیشن‌ها…</div></div></div></div>
+        </article>
+
+        <article class="card panel">
+          <h3 class="panel-title">دسترسی سریع <span>⚡</span></h3>
+          <div class="quick-list">
+            <a class="quick-row" href="#configs"><span class="quick-icon">☷</span><span class="quick-meta"><span class="quick-name">کانفیگ‌های من</span><span class="quick-sub">مشاهده و کپی سریع</span></span></a>
+            <a class="quick-row" id="status-link" href="#"><span class="quick-icon">◉</span><span class="quick-meta"><span class="quick-name">وضعیت سرویس‌ها</span><span class="quick-sub">اطلاع از وضعیت شبکه</span></span></a>
+            <a class="quick-row" id="rules-link" href="#"><span class="quick-icon">⚿</span><span class="quick-meta"><span class="quick-name">قوانین و حریم خصوصی</span><span class="quick-sub">شرایط استفاده</span></span></a>
+          </div>
+          <div class="support-box hidden" id="support-box"><div class="support-caption">ارتباط مستقیم با پشتیبانی نماینده شما</div><a class="support-link support-dynamic" id="representative-support" href="#" target="_blank" rel="noopener noreferrer">ارتباط با پشتیبانی</a></div>
+        </article>
+      </section>
+
+      <section class="card configs" id="configs">
+        <div class="section-head"><h2 class="section-title">کانفیگ‌های اختصاصی</h2><span id="config-count" style="color:var(--muted);font-size:13px">۰ مورد</span></div>
+        <div class="config-list" id="config-list"></div>
+      </section>
+    </div>
+
+    <footer class="footer"><div class="brand"><span class="brand-mark" style="width:34px;height:34px;border-radius:11px;font-size:16px" id="footer-mark">B</span><span id="footer-brand">BLUETAMP</span></div><div class="footer-links"><a id="footer-support" class="hidden" href="#" target="_blank" rel="noopener noreferrer">تماس با پشتیبانی</a><a id="footer-rules" href="#">قوانین</a><a id="footer-status" href="#">وضعیت سرویس‌ها</a></div><div id="copyright">© 2026 BlueTamp</div></footer>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <div class="loading hidden" id="loading"><div class="spinner"></div></div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ===========================
+       تنظیمات برند — فقط این بخش را ویرایش کنید
+       =========================== */
+    const BRAND = {
+      name: 'BLUETAMP',
+      mark: 'B',
+      tagline: 'FAST • STABLE • SECURE',
+      primary: '#7357ff',
+      secondary: '#23a7ff',
+      statusUrl: '#',
+      rulesUrl: '#',
+      copyright: '© 2026 BlueTamp. تمام حقوق محفوظ است.'
+    };
+
+    const $ = id => document.getElementById(id);
+    const state = { ctx:null, user:null, links:[], apps:[], usageRange:'1d' };
+    let toastTimer;
+
+    function applyBrand(){
+      document.documentElement.style.setProperty('--brand', BRAND.primary);
+      document.documentElement.style.setProperty('--brand-2', BRAND.secondary);
+      ['brand-name','footer-brand'].forEach(id => $(id).textContent = BRAND.name);
+      ['brand-mark','footer-mark'].forEach(id => $(id).textContent = BRAND.mark);
+      $('brand-tagline').textContent = BRAND.tagline;
+      $('status-link').href = BRAND.statusUrl;
+      $('rules-link').href = BRAND.rulesUrl;
+      $('footer-rules').href = BRAND.rulesUrl;
+      $('footer-status').href = BRAND.statusUrl;
+      $('copyright').textContent = BRAND.copyright;
+    }
+
+
+    function safeSupportUrl(raw){
+      if(!raw) return '';
+      try{
+        const u = new URL(String(raw).trim(), location.origin);
+        return ['http:','https:','tg:','mailto:'].includes(u.protocol) ? u.href : '';
+      }catch{return '';}
+    }
+
+    function applyRepresentativeSupport(rawUrl){
+      const url = safeSupportUrl(rawUrl);
+      const box = $('support-box');
+      const button = $('representative-support');
+      const footer = $('footer-support');
+      if(!url){
+        show(box,false);
+        show(footer,false);
+        button.removeAttribute('href');
+        footer.removeAttribute('href');
+        return;
+      }
+
+      let label = 'ارتباط با پشتیبانی';
+      let kind = 'support-dynamic';
+      const lower = url.toLowerCase();
+      if(lower.includes('t.me/') || lower.startsWith('tg:') || lower.includes('telegram.')){
+        label = 'پشتیبانی تلگرام';
+        kind = 'telegram';
+      }else if(lower.includes('wa.me/') || lower.includes('whatsapp.com/')){
+        label = 'پشتیبانی واتساپ';
+        kind = 'whatsapp';
+      }
+
+      button.className = 'support-link ' + kind;
+      button.href = url;
+      button.textContent = label;
+      footer.href = url;
+      footer.textContent = label;
+      show(box,true);
+      show(footer,true);
+    }
+
+    function show(el, yes=true){ el.classList.toggle('hidden', !yes); }
+    function toast(text){ const el=$('toast'); el.textContent=text; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),1800); }
+    function escapeHtml(v){ return String(v??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function fa(v){ return String(v).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]); }
+    function formatBytes(n){ n=Number(n); if(!Number.isFinite(n)) return '—'; if(n===0) return '۰ بایت'; const u=['بایت','کیلوبایت','مگابایت','گیگابایت','ترابایت']; const i=Math.min(u.length-1,Math.floor(Math.log(n)/Math.log(1024))); const x=n/Math.pow(1024,i); return fa((i>1?x.toFixed(1):Math.round(x)).toString().replace(/\.0$/,''))+' '+u[i]; }
+    function timestamp(v){ if(v==null||v==='') return null; let n=Number(v); if(Number.isFinite(n)){ if(n<1e11)n*=1000; return n; } const t=new Date(v).getTime(); return Number.isFinite(t)?t:null; }
+    function formatDate(v){ const t=timestamp(v); if(!t)return 'نامحدود'; try{return new Date(t).toLocaleDateString('fa-IR',{year:'numeric',month:'2-digit',day:'2-digit'});}catch{return String(v);} }
+    function remainingDays(v){ const t=timestamp(v); if(!t)return 'بدون محدودیت زمانی'; const d=Math.ceil((t-Date.now())/86400000); return d<=0?'منقضی شده':fa(d)+' روز دیگر'; }
+    function normalizeStatus(v){ return String(v&&v.name?v.name:v||'active').toLowerCase(); }
+
+    function parseInput(panelInput, tokenInput){
+      let raw=String(tokenInput||'').trim(); let panel=String(panelInput||'').trim().replace(/\/+$/,''); let subPath=''; let token='';
+      try{
+        if(/^https?:\/\//i.test(raw)){
+          const u=new URL(raw); panel=u.origin; subPath=u.pathname.replace(/\/+$/,'').replace(/\/(info|apps|links|usage)$/i,''); token=subPath.split('/').filter(Boolean).pop()||'';
+        }
+      }catch{}
+      if(!subPath){
+        if(raw.includes('/')){ subPath=raw.startsWith('/')?raw:'/'+raw; subPath=subPath.replace(/\/+$/,'').replace(/\/(info|apps|links|usage)$/i,''); token=subPath.split('/').filter(Boolean).pop()||''; }
+        else { token=raw; subPath='/sub/'+encodeURIComponent(token); }
+      }
+      if(!panel){ panel=location.origin && /^https?:/i.test(location.origin)?location.origin:''; }
+      if(panel && !/^https?:\/\//i.test(panel)) panel='https://'+panel;
+      if(!panel||!token)return null;
+      return { panel, token, subPath, subUrl:panel+subPath, infoUrl:panel+subPath+'/info', appsUrl:panel+subPath+'/apps', linksUrl:panel+subPath+'/links', usageUrl:panel+subPath+'/usage' };
+    }
+
+    function contextFromLocation(){
+      const p=location.pathname.replace(/\/+$/,'');
+      const m=p.match(/\/sub\/([^/?#]+)/i);
+      if(m) return parseInput(location.origin,p);
+      const q=new URLSearchParams(location.search); const token=q.get('token')||q.get('sub')||q.get('subscription'); const panel=q.get('panel')||q.get('panel_url')||location.origin;
+      return token?parseInput(panel,token):null;
+    }
+
+    async function fetchJson(url, timeout=10000){
+      const c=new AbortController(); const timer=setTimeout(()=>c.abort(),timeout);
+      try{ const r=await fetch(url,{headers:{Accept:'application/json'},credentials:'same-origin',signal:c.signal}); if(!r.ok)throw new Error('HTTP '+r.status); return {data:await r.json(),response:r}; }
+      finally{ clearTimeout(timer); }
+    }
+    async function fetchText(url, timeout=9000){
+      const c=new AbortController(); const timer=setTimeout(()=>c.abort(),timeout);
+      try{ const r=await fetch(url,{credentials:'same-origin',signal:c.signal}); if(!r.ok)throw new Error('HTTP '+r.status); return await r.text(); }
+      finally{ clearTimeout(timer); }
+    }
+
+    function setStatus(status){
+      const el=$('status'); el.className='status-pill'; const labels={active:'فعال ✓',limited:'محدود',expired:'منقضی',disabled:'غیرفعال',on_hold:'معلق'};
+      el.textContent=labels[status]||status;
+      el.classList.add(status==='active'?'status-active':status==='expired'||status==='disabled'?'status-danger':status==='limited'||status==='on_hold'?'status-warning':'status-muted');
+    }
+
+    function renderUser(user){
+      state.user=user; const status=normalizeStatus(user.status); const used=Number(user.used_traffic)||0; const limit=Number(user.data_limit)||0; const remain=limit?Math.max(0,limit-used):0; const pct=limit?Math.max(0,Math.min(100,Math.round(used/limit*100))):0;
+      $('username').textContent=user.username||'کاربر'; document.title=(user.username||'اشتراک')+' | '+BRAND.name;
+      setStatus(status);
+      $('account-note').textContent=status==='active'?'عضویت شما فعال است و در حال حاضر محدودیتی ندارید.':'وضعیت حساب نیاز به بررسی دارد.';
+      $('online-at').textContent='آخرین اتصال: '+(user.online_at?formatDate(user.online_at):'هرگز');
+      const expiry=status==='on_hold'&&user.on_hold_timeout?user.on_hold_timeout:user.expire;
+      $('expire-date').textContent=formatDate(expiry); $('expire-remain').textContent=remainingDays(expiry);
+      $('hwid-limit').textContent=Number(user.hwid_limit)>0?fa(user.hwid_limit)+' دستگاه':'بدون محدودیت';
+      $('total-limit').textContent=limit?formatBytes(limit):'نامحدود';
+      $('metric-total').textContent=limit?formatBytes(limit):'∞'; $('metric-used').textContent=formatBytes(used); $('metric-remain').textContent=limit?formatBytes(remain):'∞';
+      $('usage-percent').textContent=fa(pct)+'٪'; $('usage-donut').style.setProperty('--usage',pct+'%'); $('usage-progress').style.width=pct+'%';
+      $('updated-at').textContent='همین حالا';
+    }
+
+    function protocol(raw){ const l=raw.toLowerCase(); if(l.startsWith('vless://'))return'VLESS'; if(l.startsWith('vmess://'))return'VMess'; if(l.startsWith('trojan://'))return'Trojan'; if(l.startsWith('wireguard://'))return'WireGuard'; if(l.startsWith('ss://'))return'Shadowsocks'; if(l.startsWith('hysteria'))return'Hysteria'; return'Config'; }
+    function configName(raw,i){ try{ const u=new URL(raw); if(u.hash)return decodeURIComponent(u.hash.slice(1)); }catch{} return protocol(raw)+' '+fa(i+1); }
+    function renderConfigs(links){
+      state.links=links; $('config-count').textContent=fa(links.length)+' مورد'; $('config-list').innerHTML='';
+      if(!links.length){ $('config-list').innerHTML='<div class="chart-empty" style="min-height:100px">کانفیگی برای نمایش وجود ندارد.</div>'; return; }
+      links.forEach((raw,i)=>{ const row=document.createElement('div'); row.className='config-row'; row.innerHTML='<span class="config-icon">'+escapeHtml(protocol(raw))+'</span><span class="config-body"><span class="config-name">'+escapeHtml(configName(raw,i))+'</span><span class="config-preview">'+escapeHtml(raw.slice(0,70))+'</span></span><span class="config-actions"><button class="square-btn copy-config" type="button">⧉</button></span>'; row.querySelector('.copy-config').onclick=()=>copy(raw); $('config-list').appendChild(row); });
+    }
+
+    function platformIcon(p){ p=String(p||'').toLowerCase(); if(p.includes('android'))return'🤖'; if(p.includes('ios')||p.includes('mac')||p.includes('apple'))return''; if(p.includes('win'))return'⊞'; if(p.includes('linux'))return'🐧'; return'◈'; }
+    function safeUrl(url){ try{ const u=new URL(url,location.origin); return ['http:','https:'].includes(u.protocol)?u.href:'#'; }catch{return'#';} }
+    function renderApps(apps){
+      state.apps=apps; const box=$('apps-list'); box.innerHTML='';
+      if(!apps.length){ box.innerHTML='<div class="quick-row"><div class="quick-meta"><div class="quick-name">اپلیکیشنی از پنل دریافت نشد.</div></div></div>'; return; }
+      apps.slice(0,8).forEach(app=>{ const links=Array.isArray(app.download_links)?app.download_links:[]; const href=safeUrl((links[0]&&links[0].url)||app.import_url||'#'); const row=document.createElement('a'); row.className='app-row'; row.href=href; row.target='_blank'; row.rel='noopener'; row.innerHTML='<span class="app-logo">'+platformIcon(app.platform)+'</span><span class="app-meta"><span class="app-name">'+escapeHtml(app.name||'اپلیکیشن')+'</span><span class="app-platform">'+escapeHtml(app.platform||'سایر')+'</span></span><span class="app-link">دریافت ←</span>'; box.appendChild(row); });
+    }
+
+    function normalizeUsage(data){ const stats=data&&data.stats; const map={}; const add=x=>{ if(!x||!x.period_start)return; const v=Number(x.total_traffic)||0; map[x.period_start]=(map[x.period_start]||0)+v; }; if(Array.isArray(stats))stats.forEach(add); else if(stats&&typeof stats==='object')Object.values(stats).forEach(v=>Array.isArray(v)&&v.forEach(add)); return Object.keys(map).sort().map(k=>({time:k,value:map[k]})); }
+    function usageUrl(range){ const end=new Date(); const start=new Date(end); let period='hour'; if(range==='7d'){start.setDate(start.getDate()-7);period='day';} else if(range==='30d'){start.setDate(start.getDate()-30);period='day';} else start.setHours(start.getHours()-24); return state.ctx.usageUrl+'?period='+encodeURIComponent(period)+'&start='+encodeURIComponent(start.toISOString())+'&end='+encodeURIComponent(end.toISOString()); }
+    function renderChart(items){
+      const box=$('usage-chart'); if(!items.length){box.innerHTML='<div class="chart-empty">آماری برای این بازه وجود ندارد.</div>';return;}
+      const w=900,h=230,pad=24,max=Math.max(...items.map(x=>x.value),1); const pts=items.map((x,i)=>({x:pad+(w-pad*2)*(i/Math.max(1,items.length-1)),y:h-pad-(h-pad*2)*(x.value/max)})); const path=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' '); const fill=path+' L '+pts[pts.length-1].x+' '+(h-pad)+' L '+pts[0].x+' '+(h-pad)+' Z';
+      box.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-label="نمودار مصرف"><defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+BRAND.primary+'" stop-opacity=".52"/><stop offset="1" stop-color="'+BRAND.primary+'" stop-opacity="0"/></linearGradient></defs><path d="'+fill+'" fill="url(#area)"/><path d="'+path+'" fill="none" stroke="'+BRAND.primary+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
+    }
+    async function loadUsage(range){ state.usageRange=range; document.querySelectorAll('.range-btn').forEach(b=>b.classList.toggle('active',b.dataset.range===range)); $('usage-chart').innerHTML='<div class="chart-empty">در حال دریافت نمودار مصرف…</div>'; try{ const {data}=await fetchJson(usageUrl(range),8000); renderChart(normalizeUsage(data)); }catch{ $('usage-chart').innerHTML='<div class="chart-empty">دریافت نمودار ممکن نشد.</div>'; } }
+
+    async function copy(text){ try{await navigator.clipboard.writeText(text);toast('کپی شد');}catch{ const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('کپی شد');} }
+    function wireguardText(raw){ if(/^\[Interface\]/i.test(raw))return raw; return raw; }
+    function download(text,name){ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500); }
+
+    function loadQrLibrary(){
+      if(window.QRCode)return Promise.resolve();
+      return new Promise((resolve,reject)=>{ const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';s.onload=resolve;s.onerror=reject;document.head.appendChild(s); });
+    }
+    async function showQr(){ const text=state.ctx&&state.ctx.subUrl; if(!text)return; const box=$('qr-box'); box.innerHTML='<span style="color:#10142b;font-size:11px">در حال ساخت…</span>'; try{ await loadQrLibrary(); box.innerHTML=''; new QRCode(box,{text,width:130,height:130,colorDark:'#10142b',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }catch{ box.innerHTML='<span style="color:#10142b;font-size:11px;text-align:center">کتابخانه QR بارگذاری نشد</span>'; } }
+
+    async function loadDashboard(ctx){
+      state.ctx=ctx; show($('setup'),false); show($('loading'),true); $('subscription-url').textContent=ctx.subUrl;
+      try{
+        const [infoResult,linksResult,appsResult]=await Promise.allSettled([fetchJson(ctx.infoUrl),fetchText(ctx.linksUrl),fetchJson(ctx.appsUrl,8000)]);
+        if(infoResult.status!=='fulfilled')throw infoResult.reason;
+        renderUser(infoResult.value.data);
+        const infoHeaders = infoResult.value.response.headers;
+        // پاسارگارد این مقدار را بر اساس مدیر/نماینده مالک کاربر ارسال می‌کند.
+        applyRepresentativeSupport(infoHeaders.get('support-url') || '');
+        const links=linksResult.status==='fulfilled'?linksResult.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean):[];
+        renderConfigs(links);
+        renderApps(appsResult.status==='fulfilled'?(Array.isArray(appsResult.value.data)?appsResult.value.data:[]):[]);
+        show($('dashboard'),true); sessionStorage.setItem('pg_brand_panel',ctx.panel); sessionStorage.setItem('pg_brand_sub',ctx.subUrl); loadUsage('1d');
+      }catch(err){ show($('setup'),true); $('setup-error').textContent='دریافت اطلاعات انجام نشد: '+(err&&err.message?err.message:'خطای نامشخص'); show($('setup-error'),true); }
+      finally{ show($('loading'),false); }
+    }
+
+    $('load-btn').onclick=()=>{ const ctx=parseInput($('panel-input').value,$('token-input').value); if(!ctx){$('setup-error').textContent='آدرس یا لینک اشتراک معتبر نیست.';show($('setup-error'),true);return;} show($('setup-error'),false); loadDashboard(ctx); };
+    $('copy-sub').onclick=()=>state.ctx&&copy(state.ctx.subUrl);
+    $('copy-all').onclick=()=>state.links.length?copy(state.links.join('\n')):toast('کانفیگی وجود ندارد');
+    $('show-qr').onclick=showQr;
+    $('download-wg').onclick=()=>{ const wg=state.links.find(x=>/^wireguard:/i.test(x)||/^\[Interface\]/i.test(x)); wg?download(wireguardText(wg),'wireguard.conf'):toast('کانفیگ WireGuard پیدا نشد'); };
+    document.querySelectorAll('.range-btn').forEach(b=>b.onclick=()=>loadUsage(b.dataset.range));
+    $('logout-btn').onclick=()=>{sessionStorage.removeItem('pg_brand_panel');sessionStorage.removeItem('pg_brand_sub');location.href=location.origin+location.pathname.split('/sub/')[0];};
+    $('theme-btn').onclick=()=>{document.body.classList.toggle('light-mode');toast('حالت نمایشی تغییر کرد');};
+
+    applyBrand();
+    const auto=contextFromLocation() || (()=>{const p=sessionStorage.getItem('pg_brand_panel'),s=sessionStorage.getItem('pg_brand_sub');return p&&s?parseInput(p,s):null;})();
+    if(auto)loadDashboard(auto); else show($('setup'),true);
+  })();
+  </script>
+</body>
+</html>
