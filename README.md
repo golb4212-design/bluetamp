@@ -1,77 +1,46 @@
-# BlueTamp — قالب اختصاصی صفحه اشتراک پاسارگارد
+# BlueTamp PasarGuard Template v4
 
-قالب فارسی، تک‌فایلی و واکنش‌گرا برای صفحه اشتراک کاربران PasarGuard؛ مناسب موبایل، تبلت و دسکتاپ.
+قالب تک‌فایلی و واکنش‌گرا برای صفحه اشتراک PasarGuard.
 
-## تغییرات نسخه ۲
+## ویژگی‌ها
 
-- اضافه‌شدن فونت متغیر فارسی Vazirmatn
-- ساخت خودکار QR اشتراک، بدون دکمه «ساخت QR»
-- حذف کامل بخش و دانلود WireGuard
-- دریافت اطلاعات از مسیر جدید `/raw` با پشتیبانی از مسیرهای قدیمی `/info`، `/apps` و `/links`
-- اصلاح دریافت و نمایش اپلیکیشن‌های پاسارگارد
-- نمایش آیکن، توضیحات، لینک‌های دانلود و دکمه Import اپلیکیشن‌ها
-- جلوگیری از بیرون‌زدن متن‌ها، لینک اشتراک و کانفیگ‌ها در موبایل
-- دریافت خودکار `support-url` بر اساس مدیر یا نماینده مالک کاربر
+- دریافت اولیه `user`، `links` و `apps` مستقیماً از Jinja پاسارگارد
+- fallback از `/info`، `/apps` و `/raw`
+- دریافت خودکار `support-url` هر نماینده
+- تب‌های حساب، کانفیگ‌ها و اپلیکیشن‌ها
+- تشخیص سیستم‌عامل و گروه‌بندی برنامه‌ها
+- نمودار مصرف ۱ روز و ۷ روز
+- هشدار کمبود حجم و زمان
+- نمایش HWID
+- تم تاریک و روشن
+- بدون QR و بدون WireGuard
+- عدم ذخیره توکن و کانفیگ در LocalStorage
 
-## تنظیم پشتیبانی هر نماینده
+## نصب
 
-در قسمت ویرایش مدیر یا نماینده، داخل فیلد **آدرس پشتیبانی** لینک کامل وارد شود:
-
-```text
-https://t.me/BlueTampSupport
-```
-
-یا:
+فایل `index.html` را در ریشه مخزن زیر جایگزین کنید:
 
 ```text
-https://wa.me/491234567890
+golb4212-design/bluetamp
 ```
 
-قالب آدرس پشتیبانی را خودکار از پاسارگارد دریافت می‌کند؛ بنابراین نیازی به قرار دادن لینک نمایندگان داخل کد نیست.
-
-## فایل‌های مخزن
-
-این سه فایل را در شاخه `main` مخزن قرار دهید:
-
-```text
-index.html
-README.md
-install.sh
-```
-
-مخزن تنظیم‌شده:
-
-```text
-https://github.com/golb4212-design/bluetamp
-```
-
-## نصب یا به‌روزرسانی خودکار
-
-بعد از آپلود فایل‌های جدید در GitHub، روی سرور اجرا کنید:
+سپس روی سرور اجرا کنید:
 
 ```bash
 curl -4 -fsSL https://raw.githubusercontent.com/golb4212-design/bluetamp/main/install.sh | sudo bash
 ```
 
-این اسکریپت قبل از جایگزینی قالب و ویرایش `.env` نسخه پشتیبان می‌سازد.
-
-## به‌روزرسانی دستی
+یا نصب دستی:
 
 ```bash
 sudo mkdir -p /var/lib/pasarguard/templates/subscription/
-
 sudo curl -4 -fL --connect-timeout 20 --retry 3 \
--o /var/lib/pasarguard/templates/subscription/index.html \
-https://raw.githubusercontent.com/golb4212-design/bluetamp/main/index.html
+  -H "Cache-Control: no-cache" \
+  "https://raw.githubusercontent.com/golb4212-design/bluetamp/main/index.html?v=4" \
+  -o /var/lib/pasarguard/templates/subscription/index.html
 ```
 
-فایل تنظیمات را باز کنید:
-
-```bash
-sudo nano /opt/pasarguard/.env
-```
-
-این مقادیر باید وجود داشته باشند:
+در `/opt/pasarguard/.env`:
 
 ```env
 CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"
@@ -84,21 +53,9 @@ SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
 sudo pasarguard restart
 ```
 
-## تنظیم برند
+بررسی نسخه:
 
-در انتهای `index.html` بخش زیر قابل ویرایش است:
-
-```js
-const BRAND = {
-  name: 'BLUETAMP',
-  mark: 'B',
-  tagline: 'FAST • STABLE • SECURE',
-  primary: '#7357ff',
-  secondary: '#23a7ff',
-  statusUrl: '#',
-  rulesUrl: '#',
-  copyright: '© 2026 BlueTamp. تمام حقوق محفوظ است.'
-};
+```bash
+grep -n "BlueTamp PasarGuard Subscription Template v4.0.0" \
+  /var/lib/pasarguard/templates/subscription/index.html
 ```
-
-آدرس پشتیبانی را داخل `BRAND` قرار ندهید؛ این مقدار برای هر نماینده از پاسارگارد دریافت می‌شود.
